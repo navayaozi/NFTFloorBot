@@ -14,5 +14,13 @@
     "floor-price"
   ],
   "author": "navayaozi",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.0.0",
+    "axios": "^1.0.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
 }
