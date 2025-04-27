@@ -16,7 +16,19 @@ client.on('messageCreate', async (message) => {
     message.reply('Pong!');
   }
   
-  // TODO: Add NFT floor price commands
+  if (message.content.startsWith('!floor ')) {
+    const collection = message.content.slice(7);
+    if (!collection) {
+      message.reply('Please specify a collection name. Usage: !floor <collection>');
+      return;
+    }
+    
+    message.reply(`Getting floor price for ${collection}... (not implemented yet)`);
+  }
+  
+  if (message.content === '!help') {
+    message.reply('Available commands:\n!ping - Test bot\n!floor <collection> - Get floor price\n!help - Show this message');
+  }
 });
 
 client.login(process.env.DISCORD_TOKEN).catch(console.error);
