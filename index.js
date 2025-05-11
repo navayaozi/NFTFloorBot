@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const OpenSeaAPI = require('./opensea');
 const CollectionTracker = require('./tracker');
+const logger = require('./logger');
 require('dotenv').config();
 
 const client = new Client({ 
@@ -11,10 +12,11 @@ const openSea = new OpenSeaAPI(process.env.OPENSEA_API_KEY);
 const tracker = new CollectionTracker();
 
 client.once('ready', () => {
-  console.log(`Bot logged in as ${client.user.tag}`);
+  logger.info(`Bot logged in as ${client.user.tag}`);
   
   // Start price monitoring
   setInterval(checkPrices, 5 * 60 * 1000); // Check every 5 minutes
+  logger.info('Price monitoring started (5 minute intervals)');
 });
 
 async function checkPrices() {

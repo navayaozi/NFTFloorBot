@@ -9,3 +9,5 @@ CLAUDE.md
 *.log
 dist/
 build/
+logs/
+tracked_collections.json

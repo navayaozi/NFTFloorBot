@@ -5,17 +5,40 @@ class OpenSeaAPI {
     this.apiKey = apiKey;
     this.baseURL = 'https://api.opensea.io/v2';
     this.headers = apiKey ? { 'X-API-KEY': apiKey } : {};
+    this.lastRequest = 0;
+    this.rateLimit = 1000; // 1 second between requests
+  }
+
+  async rateLimitDelay() {
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequest;
+    if (timeSinceLastRequest < this.rateLimit) {
+      await new Promise(resolve => setTimeout(resolve, this.rateLimit - timeSinceLastRequest));
+    }
+    this.lastRequest = Date.now();
   }
 
   async getCollectionStats(collection) {
     try {
+      await this.rateLimitDelay();
       const response = await axios.get(
         `${this.baseURL}/collections/${collection}/stats`,
-        { headers: this.headers }
+        { 
+          headers: this.headers,
+          timeout: 10000 // 10 second timeout
+        }
       );
       return response.data;
     } catch (error) {
-      console.error(`Error fetching stats for ${collection}:`, error.message);
+      if (error.response) {
+        console.error(`API Error ${error.response.status} for ${collection}:`, error.response.data);
+        if (error.response.status === 429) {
+          console.log('Rate limited, waiting 5 seconds...');
+          await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+      } else {
+        console.error(`Network Error for ${collection}:`, error.message);
+      }
       return null;
     }
   }
